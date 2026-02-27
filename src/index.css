@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --font-fustat-extrabold: "Fustat", sans-serif;
+  --font-fustat-bold: "Fustat", sans-serif;
+  --font-fustat-semibold: "Fustat", sans-serif;
+  --font-fustat-medium: "Fustat", sans-serif;
+}
+
+@layer utilities {
+  .font-fustat-extrabold {
+    font-family: "Fustat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+  }
+
+  .font-fustat-bold {
+    font-family: "Fustat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  .font-fustat-semibold {
+    font-family: "Fustat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  .font-fustat-medium {
+    font-family: "Fustat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+}
+
+body {
+  background-color: #ebfff2;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: #B5446E;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 1;
+}
+
+.scrollbar-hide::-webkit-scrollbar { 
+  display: none;
+}
+
+.scrollbar-hide { 
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
