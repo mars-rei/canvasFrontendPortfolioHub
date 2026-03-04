@@ -23,7 +23,8 @@ function App() {
         setSelectedId(null);
     };
 
-    // for opening component panels
+
+    // for opening component panels (on the left)
     const [openPanel, setOpenPanel] = useState(null);
 
     const togglePanel = (panel) => {
@@ -36,6 +37,15 @@ function App() {
     const toggleFolder = (panel, name) => {
         setOpenFolder(prev => prev.name === name ? { panel: null, name: null } : { panel, name });
     };
+
+
+    // panel for editing (adding a shape or page)
+    const [openEditPanel, setOpenEditPanel] = useState(null);
+
+    const toggleEditPanel = (panel) => {
+        setOpenEditPanel(prev => prev === panel ? null : panel);
+    };
+
 
     // for toggling cursor to edit or move around canvas
     const [activeCursor, setActiveCursor] = useState('pointer');
@@ -73,6 +83,9 @@ function App() {
         'Creative Writing': ['fa-bookmark', { 'h': 'h' }],
         'Music': ['fa-music', { 'h': 'h' }],
     };
+
+    // shapes library
+    const shapes = ['square', 'triangle', 'circle', 'star'];
 
 
     // for toggling dark and light mode
@@ -277,12 +290,78 @@ function App() {
                                 <i className="fa fa-download fa-md"></i>
                             </div>
                         </div>
-                        <div className={`h-full space-y-4 p-4 border-t-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}>
-                            <div className={`space-y-2 text-lg font-fustat-semibold ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
-                                <p>Canvas</p>
+
+                        {openEditPanel === 'shapes' ? (
+                            /* shapes creation menu */
+                            <div>
+                                <div className={`space-y-4 p-4 border-t-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}>
+                                    <div className={`space-y-2 text-lg font-fustat-semibold ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
+                                        <p>Shapes</p>
+                                    </div>
+                                </div>
+                                <div className={`scrollbar-hide border-[#111317] ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
+                                    <div className="grid grid-cols-2 gap-2 px-4">
+                                        <div className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <i className="fa fa-square fa-2x text-[#B5446E]"></i>
+                                            <span className="text-sm">Square</span>
+                                        </div>
+                                        <div className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <i className="fa fa-play fa-2x text-[#B5446E]"></i>
+                                            <span className="text-sm">Triangle</span>
+                                        </div>
+                                        <div className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <i className="fa fa-circle fa-2x text-[#B5446E]"></i>
+                                            <span className="text-sm">Circle</span>
+                                        </div>
+                                        <div className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <i className="fa fa-star fa-2x text-[#B5446E]"></i>
+                                            <span className="text-sm">Star</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : openEditPanel === 'pages' ? (
+                            /* pages creation menu */
+                            <div>
+                                <div className={`space-y-4 p-4 border-t-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}>
+                                    <div className={`space-y-2 text-lg font-fustat-semibold ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
+                                        <p>Pages</p>
+                                    </div>
+                                </div>
+                                <div className={`scrollbar-hide border-[#111317] px-4 space-y-2 ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
+                                    <div className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <i className="fa fa-mobile-screen-button fa-lg text-[#B5446E] w-6 text-center"></i>
+                                        <span className="font-fustat-medium">Mobile</span>
+                                    </div>
+
+                                    <div className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <i className="fa fa-tablet-screen-button fa-lg text-[#B5446E] w-6 text-center"></i>
+                                        <span className="font-fustat-medium">Tablet</span>
+                                    </div>
+
+                                    <div className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <i className="fa fa-laptop fa-lg text-[#B5446E] w-6 text-center"></i>
+                                        <span className="font-fustat-medium">Laptop</span>
+                                    </div>
+
+                                    <div className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <i className="fa fa-display fa-lg text-[#B5446E] w-6 text-center"></i>
+                                        <span className="font-fustat-medium">Desktop</span>
+                                    </div>
+
+                                    <div className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <i className="fa fa-note-sticky fa-lg text-[#B5446E] w-6 text-center"></i>
+                                        <span className="font-fustat-medium">Paper</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            /* default right side menu bar */
+                            <div className={`flex-1 p-4 border-t-2 ${darkMode ? "border-[#EBFFF2] text-[#EBFFF2]" : "border-[#111317] text-[#111317]"}`}>
+                                <p className="text-lg font-fustat-semibold mb-4">Canvas</p>
                                 <ColourPicker color={canvasColor} onChange={setCanvasColor} darkMode={darkMode} />
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
@@ -304,10 +383,10 @@ function App() {
                             />
 
                             {/* for new page */}
-                            <i className="fa fa-file-circle-plus hover:text-[#B5446E]"></i>
+                            <i className="fa fa-file-circle-plus hover:text-[#B5446E]" onClick={() => toggleEditPanel('pages')}></i>
 
                             {/* for new shape */}
-                            <i className="fa fa-draw-polygon hover:text-[#B5446E]"></i>
+                            <i className="fa fa-draw-polygon cursor-pointer hover:text-[#B5446E]" onClick={() => toggleEditPanel('shapes')}></i>
 
                             {/* for adding text */}
                             <button className="fa fa-font cursor-pointer hover:text-[#B5446E]" onClick={() => addToCanvas('text')} />
