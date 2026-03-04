@@ -1,7 +1,12 @@
 import { useState } from "react";
-import Canvas from './components/Canvas';
+
+import Page from './components/Page';
+import ColourPicker from './components/ColourPicker';
 
 function App() {
+
+    // to set the colour of the whole canvas (where the page canvases sit)
+    const [canvasColor, setCanvasColor] = useState('#1d2025');
 
     // for adding items to canvas
     const [canvasItems, setCanvasItems] = useState([]);
@@ -32,6 +37,9 @@ function App() {
         setOpenFolder(prev => prev.name === name ? { panel: null, name: null } : { panel, name });
     };
 
+    // for toggling cursor to edit or move around canvas
+    const [activeCursor, setActiveCursor] = useState('pointer');
+
 
     // project directory
     const projects = {
@@ -41,7 +49,7 @@ function App() {
     };
 
     // general components
-    const general = ['slides', 'carousel'];
+    const general = ['slides', 'carousel', 'text'];
 
     // industry library components directory
     const components = {
@@ -66,7 +74,7 @@ function App() {
         'Music': ['fa-music', { 'h': 'h' }],
     };
 
-    
+
     // for toggling dark and light mode
     const [darkMode, setDarkMode] = useState(false);
 
@@ -187,6 +195,10 @@ function App() {
                                             <i className="fa fa-film fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Carousel</span>
                                         </div>
+                                        <div onClick={() => addToCanvas('text')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <i className="fa fa-font fa-2x text-[#B5446E]"></i>
+                                            <span className="text-sm">Text</span>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -240,17 +252,18 @@ function App() {
 
                     </div>
 
-                    <div className="w-2/3 h-full flex items-center justify-center bg-[#1d2025]">
-                        <div className="w-216 flex flex-col space-y-2 text-[#EBFFF2] font-fustat-medium text-md">
-                            <div className="w-full flex flex-row justify-between">
-                                <p>Home</p>
-                                <p>720 x 480</p>
-                            </div>
-                            <Canvas
+                    {/* canvas */}
+                    <div 
+                        className="w-2/3 h-full flex items-center justify-center" 
+                        style={{ backgroundColor: canvasColor, cursor: activeCursor === 'hand' ? 'grab' : 'default' }}
+                    >
+                        <div className="w-216 flex flex-col text-[#EBFFF2] font-fustat-medium text-md">
+                            <Page
                                 items={canvasItems}
                                 selectedId={selectedId}
                                 onSelect={setSelectedId}
                                 onRemove={removeFromCanvas}
+                                activeCursor={activeCursor}
                             />
                         </div>
                     </div>
@@ -267,10 +280,7 @@ function App() {
                         <div className={`h-full space-y-4 p-4 border-t-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}>
                             <div className={`space-y-2 text-lg font-fustat-semibold ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
                                 <p>Canvas</p>
-                                <div className={`flex flex-row items-center w-full px-2 py-1 border-2 rounded-md text-base font-fustat-medium space-x-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}>
-                                    <i className="fa fa-square fa-lg text-[#1d2025]"></i>
-                                    <p>#1d2025</p>
-                                </div>
+                                <ColourPicker color={canvasColor} onChange={setCanvasColor} darkMode={darkMode} />
                             </div>
                         </div>
                     </div>
@@ -281,19 +291,37 @@ function App() {
                         <div className={`py-2 px-8 flex items-center justify-between rounded-2xl fa-xl
                             ${darkMode ? "text-[#EBFFF2] bg-[#1F1F1F]" : "text-[#1F1F1F] bg-[#EBFFF2]"}`}
                         >
-                            <i className="fa fa-arrow-pointer"></i>
-                            <i className="fa fa-hand"></i>
-                            <i className="fa fa-file-circle-plus"></i>
-                            <i className="fa fa-draw-polygon"></i>
-                            <i className="fa fa-font"></i>
+                            {/* for editing on canvas */}
+                            <button
+                                className={`fa fa-arrow-pointer cursor-pointer hover:text-[#B5446E] ${activeCursor=== 'pointer' ? 'text-[#B5446E]' : ''}`}
+                                onClick={() => setActiveCursor('pointer')}
+                            />
+
+                            {/* for grabbing and moving around canvas */}
+                            <button
+                                className={`fa fa-hand cursor-pointer hover:text-[#B5446E] ${activeCursor=== 'pointer' ? '' : 'text-[#B5446E]'}`}
+                                onClick={() => setActiveCursor('hand')}
+                            />
+
+                            {/* for new page */}
+                            <i className="fa fa-file-circle-plus hover:text-[#B5446E]"></i>
+
+                            {/* for new shape */}
+                            <i className="fa fa-draw-polygon hover:text-[#B5446E]"></i>
+
+                            {/* for adding text */}
+                            <button className="fa fa-font cursor-pointer hover:text-[#B5446E]" onClick={() => addToCanvas('text')} />
+
                             <div className={`inline-block h-full min-h-[2em] w-1 self-stretch rounded-full ${darkMode ? "bg-[#EBFFF2]" : "bg-[#1F1F1F]"}`}></div>
+
+
                             <div className={`flex flex-row items-center px-2 py-1 border-3 rounded-md text-lg font-fustat-semibold space-x-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#1F1F1F]"}`}>
                                 <i className="fa-solid fa-magnifying-glass fa-sm"></i>
                                 <p>60%</p>
                             </div>
-                            <button onClick={() => setDarkMode(!darkMode)}>
-                                <i className={`fa ${darkMode ? "fa-sun" : "fa-moon"}`}></i>
-                            </button>
+
+                            {/* toggling dark and light mode */}
+                            <button onClick={() => setDarkMode(!darkMode)} className={`hover:text-[#B5446E] cursor-pointer fa ${darkMode ? "fa-sun" : "fa-moon"}`} />
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Rnd } from "react-rnd";
 
-function Slides({ isSelected, onSelect }) {
+function Slides({ isSelected, onSelect, activeCursor }) {
+
+    const locked = activeCursor === 'hand';
+
     const items = [
         "/images/1.png",
         "/images/2.png",
@@ -30,7 +33,9 @@ function Slides({ isSelected, onSelect }) {
             style={style}
             default={{ x: 0, y: 0, width: 200, height: 200 }}
             bounds=".bounds"
-            onMouseDown={(e) => { e.stopPropagation(); onSelect(); }}
+            disableDragging={locked}
+            enableResizing={!locked}
+            onMouseDown={(e) => { if (locked) return; e.stopPropagation(); onSelect(); }}
             className={`group ${isSelected ? "outline-2 outline-[#003c66]" : "hover:outline-2 hover:outline-[#003c66]"}`}
         >
             <div className="relative h-full overflow-hidden flex flex-col">
@@ -47,21 +52,21 @@ function Slides({ isSelected, onSelect }) {
                         </p>
                         <div className="flex justify-center">
                             {currentSlide === 0 && items.length > 1 && (
-                                <div onClick={next} className="cursor-pointer hover:text-white">
+                                <div onClick={next} className={`hover:text-white ${locked ? 'cursor-grab pointer-events-none' : 'cursor-pointer'}`}>
                                     <i className="fa-solid fa-arrow-right fa-sm"></i>
                                 </div>
                             )}
                             {currentSlide === items.length - 1 && items.length > 1 && (
-                                <div onClick={prev} className="cursor-pointer hover:text-white">
+                                <div onClick={prev} className={`hover:text-white ${locked ? 'cursor-grab pointer-events-none' : 'cursor-pointer'}`}>
                                     <i className="fa-solid fa-arrow-left fa-sm"></i>
                                 </div>
                             )}
                             {currentSlide > 0 && currentSlide < items.length - 1 && items.length > 1 && (
                                 <div className="flex">
-                                    <div onClick={prev} className="cursor-pointer hover:text-white mx-2">
+                                    <div onClick={prev} className={`mx-2 hover:text-white ${locked ? 'cursor-grab pointer-events-none' : 'cursor-pointer'}`}>
                                         <i className="fa-solid fa-arrow-left fa-sm"></i>
                                     </div>
-                                    <div onClick={next} className="cursor-pointer hover:text-white mx-2">
+                                    <div onClick={next} className={`mx-2 hover:text-white ${locked ? 'cursor-grab pointer-events-none' : 'cursor-pointer'}`}>
                                         <i className="fa-solid fa-arrow-right fa-sm"></i>
                                     </div>
                                 </div>

@@ -1,6 +1,9 @@
 import { Rnd } from "react-rnd";
 
-function Carousel({ isSelected, onSelect }) {
+function Carousel({ isSelected, onSelect, activeCursor }) {
+
+    const locked = activeCursor === 'hand';
+
     {/* creates list of media */}
     const items = [
         "/images/2.png",
@@ -24,7 +27,9 @@ function Carousel({ isSelected, onSelect }) {
             style={style}
             default={{ x: 0, y: 0, width: 600, height: 400 }}
             bounds=".bounds"
-            onMouseDown={(e) => { e.stopPropagation(); onSelect(); }}
+            disableDragging={locked}
+            enableResizing={!locked}
+            onMouseDown={(e) => { if (locked) return; e.stopPropagation(); onSelect(); }}
             className={`group ${isSelected ? "outline-2 outline-[#003c66]" : "hover:outline-2 hover:outline-[#003c66]"}`}
         >
             <div className="w-full h-full overflow-hidden">

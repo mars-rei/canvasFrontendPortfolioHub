@@ -5,10 +5,11 @@ import { useEffect } from "react";
 import Carousel from './Carousel';
 import Image from './Image';
 import Slides from './Slides';
+import Text from './Text';
 
 // the last component to be declared is on the top layer
 
-function Canvas({ items, selectedId, onSelect, onRemove }) {
+function Page({ items, selectedId, onSelect, onRemove, activeCursor }) {
 
     // for deleting components from canvas
     useEffect(() => {
@@ -28,20 +29,36 @@ function Canvas({ items, selectedId, onSelect, onRemove }) {
             isSelected: selectedId === item.id,
             onSelect: () => onSelect(item.id),
             onRemove: () => onRemove(item.id),
+            activeCursor,
         };
 
         if (item.type === 'image') return <Image {...props} src={item.src} />;
         if (item.type === 'slides') return <Slides {...props} />;
         if (item.type === 'carousel') return <Carousel {...props} />;
+        if (item.type === 'text') return <Text {...props} />;
     };
 
     return (
-        <div className="bounds w-216 h-144 bg-[#B5446E]" onClick={() => onSelect(null)}>
-            <div className="offsetParent">
-                {items.map(showItem)}
+        <>
+            <div className="w-full flex flex-row justify-between">
+                {/* page name */}
+                <textarea 
+                    className="resize-none bg-transparent outline-none -mb-4"
+                    onMouseDown={(e) => e.stopPropagation()}
+                    placeholder="Enter page name..."
+                    defaultValue="Home"
+                />
+
+                {/* height and width of page */}
+                <p>720 x 480</p> 
             </div>
-        </div>
+            <div className="bounds w-216 h-144 bg-[#B5446E]" onClick={() => onSelect(null)}>
+                <div className="offsetParent">
+                    {items.map(showItem)}
+                </div>
+            </div>
+        </>
     );
 }
 
-export default Canvas;
+export default Page;
