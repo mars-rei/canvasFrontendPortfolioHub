@@ -1,131 +1,73 @@
 import { useState } from "react";
-
 import Canvas from './components/Canvas';
 
 function App() {
 
-    // for toggling project media and component library tabs
+    // for adding items to canvas
+    const [canvasItems, setCanvasItems] = useState([]);
+
+    const addToCanvas = (type, src = null) => {
+        setCanvasItems(prev => [...prev, { id: Date.now(), type, src }]);
+    };
+
+    // for removing items from canvas
+    const [selectedId, setSelectedId] = useState(null);
+
+    const removeFromCanvas = (id) => {
+        setCanvasItems(prev => prev.filter(item => item.id !== id));
+        setSelectedId(null);
+    };
+
+    // for opening component panels
     const [openPanel, setOpenPanel] = useState(null);
 
     const togglePanel = (panel) => {
         setOpenPanel(prev => prev === panel ? null : panel);
     };
 
-    // folders for project media and component libraries
+    // for opening folders in media and component panels
+    const [openFolder, setOpenFolder] = useState({ panel: null, name: null });
+
+    const toggleFolder = (panel, name) => {
+        setOpenFolder(prev => prev.name === name ? { panel: null, name: null } : { panel, name });
+    };
+
+
+    // project directory
     const projects = {
-        'fire on marz': ["/images/1.png", "/images/2.png"], 
-        'portfolioHub': [], 
+        'fire on marz': ["/images/1.png", "/images/2.png"],
+        'portfolioHub': [],
         'The Green Room': [],
     };
 
+    // general components
+    const general = ['slides', 'carousel'];
+
+    // industry library components directory
     const components = {
-        'Graphic Design': ['fa-bezier-curve', 
-            {
-                'h': 'h'
-            }
-        ],
-        'Illustration': ['fa-paint-brush',
-            {
-                'h': 'h'
-            }
-        ],
-        'Animation': ['fa-person-walking',
-            {
-                'h': 'h'
-            }
-        ],
-        'UI/UX Design': ['fa-user-check',
-            {
-                'h': 'h'
-            }
-        ],
-        'Software Design': ['fa-laptop-code',
-            {
-                'h': 'h'
-            }
-        ],
-        'Game Design': ['fa-gamepad',
-            {
-                'h': 'h'
-            }
-        ],
-        '3d Art / Animation': ['fa-cube',
-            {
-                'h': 'h'
-            }
-        ],
-        'Photography': ['fa-camera',
-            {
-                'h': 'h'
-            }
-        ],
-        'Film Production': ['fa-film',
-            {
-                'h': 'h'
-            }
-        ],
-        'Fashion Design': ['fa-shirt',
-            {
-                'h': 'h'
-            }
-        ],
-        'Architecture': ['fa-archway',
-            {
-                'h': 'h'
-            }
-        ],
-        'Product Design': ['fa-box-open',
-            {
-                'h': 'h'
-            }
-        ],
-        'Content Creation': ['fa-lightbulb',
-            {
-                'Social media embed': 'h'
-            }
-        ],
-        'Marketing': ['fa-magnifying-glass-chart',
-            {
-                'h': 'h'
-            }
-        ],
-        'Social Media Management': ['fa-hashtag',
-            {
-                'h': 'h'
-            }
-        ],
-        'Journalism': ['fa-book-open',
-            {
-                'h': 'h'
-            }
-        ],
-        'Screen Writing': ['fa-pen-clip',
-            {
-                'h': 'h'
-            }
-        ],
-        'Creative Writing': ['fa-bookmark',
-            {
-                'h': 'h'
-            }
-        ],
-        'Music': ['fa-music',
-            {
-                'h': 'h'
-            }
-        ],
+        'Graphic Design': ['fa-bezier-curve', { 'h': 'h' }],
+        'Illustration': ['fa-paint-brush', { 'h': 'h' }],
+        'Animation': ['fa-person-walking', { 'h': 'h' }],
+        'UI/UX Design': ['fa-user-check', { 'h': 'h' }],
+        'Software Design': ['fa-laptop-code', { 'h': 'h' }],
+        'Game Design': ['fa-gamepad', { 'h': 'h' }],
+        '3d Art / Animation': ['fa-cube', { 'h': 'h' }],
+        'Photography': ['fa-camera', { 'h': 'h' }],
+        'Film Production': ['fa-film', { 'h': 'h' }],
+        'Fashion Design': ['fa-shirt', { 'h': 'h' }],
+        'Architecture': ['fa-archway', { 'h': 'h' }],
+        'Product Design': ['fa-box-open', { 'h': 'h' }],
+        'Content Creation': ['fa-lightbulb', { 'Social media embed': 'h' }],
+        'Marketing': ['fa-magnifying-glass-chart', { 'h': 'h' }],
+        'Social Media Management': ['fa-hashtag', { 'h': 'h' }],
+        'Journalism': ['fa-book-open', { 'h': 'h' }],
+        'Screen Writing': ['fa-pen-clip', { 'h': 'h' }],
+        'Creative Writing': ['fa-bookmark', { 'h': 'h' }],
+        'Music': ['fa-music', { 'h': 'h' }],
     };
 
-
-    // for toggling and directing individual project media or industry folders
-    const [openFolder, setOpenFolder] = useState(null); 
-
-    const toggleFolder = (name) => {
-        setOpenFolder(prev => prev === name ? null : name);
-    };
-
-
-    // for toggling dark mode
+    
+    // for toggling dark and light mode
     const [darkMode, setDarkMode] = useState(false);
 
     return (
@@ -154,19 +96,26 @@ function App() {
                                 <i className="fa fa-search fa-sm"></i>
                                 <p>Search</p>
                             </div>
-                            <div className={`space-y-2 text-lg font-fustat-semibold
+                            <div className={`text-lg font-fustat-semibold
+                                ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}
+                            >
+                                <p>Pages</p>
+                                <div className="text-base font-fustat-medium hover:bg-[#B5446E]/8 pl-3 py-1 rounded-md">
+                                    <p>Home</p>
+                                </div>
+                            </div>
+                            <div className={`text-lg font-fustat-semibold
                                 ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}
                             >
                                 <p>Layers</p>
-                                <div className="text-base font-fustat-medium">
-                                    <p>Home</p>
+                                <div className="text-base font-fustat-medium hover:bg-[#B5446E]/8 pl-3 py-1 rounded-md">
+                                    {/*add components as added to canvas*/}
                                 </div>
                             </div>
                         </div>
 
-                        <div className={`shrink-0
-                            ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}
-                        >
+                        {/* project media */}
+                        <div className={`shrink-0 ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
                             <div
                                 className="flex flex-row items-center justify-between w-full px-4 py-2 text-lg font-fustat-medium cursor-pointer select-none hover:bg-[#B5446E]/2"
                                 onClick={() => togglePanel('media')}
@@ -179,29 +128,22 @@ function App() {
                             </div>
                             {openPanel === 'media' && (
                                 <div className="scrollbar-hide overflow-y-auto max-h-full space-y-2 p-4 text-sm font-fustat-medium border-t border-[#111317]">
-                                    {openFolder && projects[openFolder] ? (
+                                    {openFolder.panel === 'media' && projects[openFolder.name] ? (
                                         // inner level - project media
                                         <div className="space-y-2">
                                             <div
                                                 className="flex flex-row items-center space-x-2 text-base hover:text-[#B5446E] cursor-pointer mb-3"
-                                                onClick={() => setOpenFolder(null)}
+                                                onClick={() => setOpenFolder({ panel: null, name: null })}
                                             >
                                                 <i className="fa fa-chevron-left fa-xs"></i>
-                                                <span>{openFolder}</span>
+                                                <span>{openFolder.name}</span>
                                             </div>
-
-                                            {/* checking if there are contents */}
-                                            {projects[openFolder].length === 0 ? (
+                                            {projects[openFolder.name].length === 0 ? (
                                                 <p className="text-xs text-gray-500 text-center">No media yet</p>
                                             ) : (
-                                                projects[openFolder].map((item) => (
-                                                    <div key={item} className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
-                                                        <div className="w-full h-full">
-                                                            <img 
-                                                                src={item} 
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                        </div>
+                                                projects[openFolder.name].map((item) => (
+                                                    <div key={item} onClick={() => addToCanvas('image', item)} className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                                        <img src={item} className="w-full h-full object-cover" />
                                                     </div>
                                                 ))
                                             )}
@@ -210,7 +152,7 @@ function App() {
                                         // outer level - project folders
                                         <div className="grid grid-cols-2">
                                             {Object.entries(projects).map(([project, media]) => (
-                                                <div key={project} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer" onClick={() => toggleFolder(project)}>
+                                                <div key={project} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer" onClick={() => toggleFolder('media', project)}>
                                                     <i className="fa fa-folder fa-3x text-[#B5446E]"></i>
                                                     <span className="truncate">{project}</span>
                                                 </div>
@@ -221,34 +163,60 @@ function App() {
                             )}
                         </div>
 
-                        <div className={`shrink-0
-                            ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}
-                        >
+                        {/* general components */}
+                        <div className={`shrink-0 ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
+                            <div
+                                className="flex flex-row items-center justify-between w-full px-4 py-2 text-lg font-fustat-medium cursor-pointer select-none hover:bg-[#B5446E]/2 border-t-2 border-[#111317]"
+                                onClick={() => togglePanel('general')}
+                            >
+                                <div className="flex flex-row items-center space-x-2">
+                                    <i className="fa fa-shapes fa-sm"></i>
+                                    <p>General Components</p>
+                                </div>
+                                <i className={`fa fa-chevron-down fa-xs ${openPanel === 'general' ? 'rotate-180' : ''}`}></i>
+                            </div>
+                            
+                            {openPanel === 'general' && (
+                                <div className="scrollbar-hide overflow-y-auto max-h-96 border-t border-[#111317]">
+                                    <div className="grid grid-cols-2 gap-2 p-4">
+                                        <div onClick={() => addToCanvas('slides')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <i className="fa fa-images fa-2x text-[#B5446E]"></i>
+                                            <span className="text-sm">Slides</span>
+                                        </div>
+                                        <div onClick={() => addToCanvas('carousel')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <i className="fa fa-film fa-2x text-[#B5446E]"></i>
+                                            <span className="text-sm">Carousel</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* component libraries */}
+                        <div className={`shrink-0 ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
                             <div
                                 className="flex flex-row items-center justify-between w-full px-4 py-2 text-lg font-fustat-medium cursor-pointer select-none hover:bg-[#B5446E]/2 border-t-2 border-[#111317]"
                                 onClick={() => togglePanel('components')}
                             >
                                 <div className="flex flex-row items-center space-x-2">
-                                    <i className="fa fa-shapes fa-sm"></i>
-                                    <p>Component Libraries</p>
+                                    <i className="fa fa-briefcase fa-sm"></i>
+                                    <p>Industry Libraries</p>
                                 </div>
                                 <i className={`fa fa-chevron-down fa-xs ${openPanel === 'components' ? 'rotate-180' : ''}`}></i>
                             </div>
                             {openPanel === 'components' && (
                                 <div className="scrollbar-hide overflow-y-auto max-h-96 border-t border-[#111317]">
-                                    {openFolder && components[openFolder] ? (
-                                        // library components
+                                    {openFolder.panel === 'components' && components[openFolder.name] ? (
+                                        // inner level - library components
                                         <div className="p-4 space-y-2">
                                             <div
                                                 className="flex flex-row items-center space-x-2 text-base hover:text-[#B5446E] cursor-pointer mb-3"
-                                                onClick={() => setOpenFolder(null)}
+                                                onClick={() => setOpenFolder({ panel: null, name: null })}
                                             >
                                                 <i className="fa fa-chevron-left fa-xs"></i>
-                                                <span>{openFolder}</span>
+                                                <span>{openFolder.name}</span>
                                             </div>
-
-                                            {/* checking if there are contents */}
-                                            {Object.entries(components[openFolder][1]).map(([componentName, component]) => (
+                                            {Object.entries(components[openFolder.name][1]).map(([componentName, component]) => (
                                                 <div key={componentName} className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                                     <i className="fa fa-shapes fa-xs text-[#B5446E]"></i>
                                                     <span className="font-fustat-medium">{componentName}</span>
@@ -256,10 +224,10 @@ function App() {
                                             ))}
                                         </div>
                                     ) : (
-                                        // industry libraries
+                                        // outer level - industry libraries
                                         <div className="grid grid-cols-2 gap-2 p-4">
                                             {Object.entries(components).map(([industry, [icon, subComponents]]) => (
-                                                <div key={industry} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer" onClick={() => toggleFolder(industry)}>
+                                                <div key={industry} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer" onClick={() => toggleFolder('components', industry)}>
                                                     <i className={`fa ${icon} fa-2x text-[#B5446E]`}></i>
                                                     <span className="text-sm line-clamp-2 leading-tight">{industry}</span>
                                                 </div>
@@ -278,13 +246,16 @@ function App() {
                                 <p>Home</p>
                                 <p>720 x 480</p>
                             </div>
-                            <Canvas />
+                            <Canvas
+                                items={canvasItems}
+                                selectedId={selectedId}
+                                onSelect={setSelectedId}
+                                onRemove={removeFromCanvas}
+                            />
                         </div>
                     </div>
 
-                    <div className={`w-1/6 flex flex-col
-                        ${darkMode ? "bg-[#111317]" : "bg-[#EBFFF2]"}`}
-                    >
+                    <div className={`w-1/6 flex flex-col ${darkMode ? "bg-[#111317]" : "bg-[#EBFFF2]"}`}>
                         <div className="flex flex-row items-center w-full px-4 h-20 justify-between shrink-0">
                             <div className="rounded-full px-4 h-8 text-md bg-[#B5446E] text-[#EBFFF2] font-fustat-medium items-center justify-center flex">
                                 Publish Portfolio
@@ -293,16 +264,10 @@ function App() {
                                 <i className="fa fa-download fa-md"></i>
                             </div>
                         </div>
-                        <div className={`h-full space-y-4 p-4 border-t-2
-                            ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}
-                        >
-                            <div className={`space-y-2 text-lg font-fustat-semibold
-                                ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}
-                            >
+                        <div className={`h-full space-y-4 p-4 border-t-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}>
+                            <div className={`space-y-2 text-lg font-fustat-semibold ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
                                 <p>Canvas</p>
-                                <div className={`flex flex-row items-center w-full px-2 py-1 border-2 rounded-md text-base font-fustat-medium space-x-2
-                                    ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}
-                                >
+                                <div className={`flex flex-row items-center w-full px-2 py-1 border-2 rounded-md text-base font-fustat-medium space-x-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}>
                                     <i className="fa fa-square fa-lg text-[#1d2025]"></i>
                                     <p>#1d2025</p>
                                 </div>
@@ -321,18 +286,12 @@ function App() {
                             <i className="fa fa-file-circle-plus"></i>
                             <i className="fa fa-draw-polygon"></i>
                             <i className="fa fa-font"></i>
-                            <div className={`inline-block h-full min-h-[2em] w-1 self-stretch rounded-full
-                                ${darkMode ? "bg-[#EBFFF2] " : "bg-[#1F1F1F]"}`}
-                            ></div>
-                            <div className={`flex flex-row items-center px-2 py-1 border-3 rounded-md text-lg font-fustat-semibold space-x-2
-                                ${darkMode ? "border-[#EBFFF2] " : "border-[#1F1F1F]"}`}
-                            >
+                            <div className={`inline-block h-full min-h-[2em] w-1 self-stretch rounded-full ${darkMode ? "bg-[#EBFFF2]" : "bg-[#1F1F1F]"}`}></div>
+                            <div className={`flex flex-row items-center px-2 py-1 border-3 rounded-md text-lg font-fustat-semibold space-x-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#1F1F1F]"}`}>
                                 <i className="fa-solid fa-magnifying-glass fa-sm"></i>
                                 <p>60%</p>
                             </div>
-                            <button
-                                onClick={() => setDarkMode(!darkMode)}
-                            >
+                            <button onClick={() => setDarkMode(!darkMode)}>
                                 <i className={`fa ${darkMode ? "fa-sun" : "fa-moon"}`}></i>
                             </button>
                         </div>

@@ -1,68 +1,46 @@
 // https://github.com/bokuweb/react-rnd/blob/master/stories/bounds-and-offset.js
 
-import { Rnd } from "react-rnd";
+import { useEffect } from "react";
 
-function Canvas() {
+import Carousel from './Carousel';
+import Image from './Image';
+import Slides from './Slides';
 
-    const style = {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+// the last component to be declared is on the top layer
+
+function Canvas({ items, selectedId, onSelect, onRemove }) {
+
+    // for deleting components from canvas
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.key === "Delete" || e.key === "Backspace") && selectedId) {
+                onRemove(selectedId);
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [selectedId]);
+
+    // for rendering items onto canvas
+    const showItem = (item) => {
+        const props = {
+            key: item.id,
+            isSelected: selectedId === item.id,
+            onSelect: () => onSelect(item.id),
+            onRemove: () => onRemove(item.id),
+        };
+
+        if (item.type === 'image') return <Image {...props} src={item.src} />;
+        if (item.type === 'slides') return <Slides {...props} />;
+        if (item.type === 'carousel') return <Carousel {...props} />;
     };
 
-    const handleClick = () => {
-        console.log('click work.')
-    }
-
-    const handleDragStart = (e, data) => {
-        console.log(data.x, data.y)
-    }
-
-    const handleDrag = (e, data) => {
-        console.log(data.x, data.y)
-    }
-
-    const handleDragStop = (e, data) => {
-        console.log(data.x, data.y)
-    }
-
-    const handleResizeStart = (_, __, ele) => {
-        console.log(ele.clientWidth, ele.clientHeight)
-    }
-
-    const handleResize = (_, __, ele, ___, pos) => {
-        console.log(ele.clientWidth, ele.clientHeight, pos.x, pos.y)
-    }
-
-    const handleResizeStop = (_, __, ele, ___, pos) => {
-        console.log(ele.clientWidth, ele.clientHeight, pos.x, pos.y)
-    }
-
     return (
-        <>
-            <div className="bounds w-216 h-144 bg-[#B5446E]">
-                <div className="offsetParent">
-                    <Rnd
-                        extendsProps={{ onClick: handleClick }}
-                        style={style}
-                        default={{ x: 0, y: 0, width: 100, height: 100 }}
-                        bounds=".bounds"
-                        onResizeStart={handleResizeStart}
-                        onResize={handleResize}
-                        onResizeStop={handleResizeStop}
-                        onDragStart={handleDragStart}
-                        onDrag={handleDrag}
-                        onDragStop={handleDragStop}
-                        className="hover:outline-2 outline-[#003c66]"
-                        >
-                        <img 
-                            src="/images/1.png" 
-                            className="w-full h-full"
-                        />
-                    </Rnd>
-                </div>
+        <div className="bounds w-216 h-144 bg-[#B5446E]" onClick={() => onSelect(null)}>
+            <div className="offsetParent">
+                {items.map(showItem)}
             </div>
-        </>
+        </div>
     );
 }
 
