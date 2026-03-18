@@ -7,6 +7,12 @@ import Image from './Image';
 import Slides from './Slides';
 import Text from './Text';
 
+import Star from './shapes/Star';
+import Square from './shapes/Square';
+import Circle from './shapes/Circle';
+import Rectangle from './shapes/Rectangle';
+import Triangle from './shapes/Triangle';
+
 // the last component to be declared is on the top layer
 
 function Page({ items, selectedId, onSelect, onRemove, activeCursor }) {
@@ -36,6 +42,13 @@ function Page({ items, selectedId, onSelect, onRemove, activeCursor }) {
         if (item.type === 'slides') return <Slides {...props} />;
         if (item.type === 'carousel') return <Carousel {...props} />;
         if (item.type === 'text') return <Text {...props} />;
+
+        // integrating
+        if (item.type === 'star') return <Star {...props} />;
+        if (item.type === 'square') return <Square {...props} />;
+        if (item.type === 'circle') return <Circle {...props} />;
+        if (item.type === 'rectangle') return <Rectangle {...props} />;
+        if (item.type === 'triangle') return <Triangle {...props} />;
     };
 
     return (

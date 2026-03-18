@@ -299,19 +299,19 @@ function App() {
                                 </div>
                                 <div className={`scrollbar-hide border-[#111317] ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
                                     <div className="grid grid-cols-2 gap-2 px-4">
-                                        <div className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => addToCanvas('square')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-square fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Square</span>
                                         </div>
-                                        <div className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => addToCanvas('triangle')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-play fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Triangle</span>
                                         </div>
-                                        <div className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => addToCanvas('circle')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-circle fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Circle</span>
                                         </div>
-                                        <div className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => addToCanvas('star')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-star fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Star</span>
                                         </div>
