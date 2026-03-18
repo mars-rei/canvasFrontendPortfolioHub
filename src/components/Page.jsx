@@ -40,21 +40,23 @@ function Page({ items, selectedId, onSelect, onRemove, activeCursor }) {
 
     return (
         <>
-            <div className="w-full flex flex-row justify-between">
-                {/* page name */}
-                <textarea 
-                    className="resize-none bg-transparent outline-none -mb-4"
-                    onMouseDown={(e) => e.stopPropagation()}
-                    placeholder="Enter page name..."
-                    defaultValue="Home"
-                />
+            <div className="w-216 flex flex-col text-[#EBFFF2] font-fustat-medium text-md">
+                <div className="w-full flex flex-row justify-between">
+                    {/* page name */}
+                    <textarea 
+                        className="resize-none bg-transparent outline-none -mb-4"
+                        onMouseDown={(e) => e.stopPropagation()}
+                        placeholder="Enter page name..."
+                        defaultValue="Home"
+                    />
 
-                {/* height and width of page */}
-                <p>720 x 480</p> 
-            </div>
-            <div className="bounds w-216 h-144 bg-[#B5446E]" onClick={() => onSelect(null)}>
-                <div className="offsetParent">
-                    {items.map(showItem)}
+                    {/* height and width of page */}
+                    <p>720 x 480</p> 
+                </div>
+                <div className="bounds w-216 h-144 bg-[#B5446E]" onClick={() => onSelect(null)}>
+                    <div className="offsetParent">
+                        {items.map(showItem)}
+                    </div>
                 </div>
             </div>
         </>

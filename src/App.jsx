@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import Page from './components/Page';
 import ColourPicker from './components/ColourPicker';
+import Canvas from './layout/Canvas';
 
 function App() {
 
@@ -93,9 +94,9 @@ function App() {
 
     return (
         <>
-            <div>
+            <div style={{ backgroundColor: canvasColor }}>
                 <div className="h-screen w-screen flex flex-row">
-                    <div className={`w-1/6 flex flex-col
+                    <div className={`w-1/6 flex flex-col relative z-10
                         ${darkMode ? "bg-[#111317]" : "bg-[#EBFFF2]"}`}
                     >
                         <div className={`flex flex-row items-center w-full px-4 h-20 text-lg font-fustat-bold space-x-2 justify-between shrink-0
@@ -266,22 +267,19 @@ function App() {
                     </div>
 
                     {/* canvas */}
-                    <div 
-                        className="w-2/3 h-full flex items-center justify-center" 
-                        style={{ backgroundColor: canvasColor, cursor: activeCursor === 'hand' ? 'grab' : 'default' }}
-                    >
-                        <div className="w-216 flex flex-col text-[#EBFFF2] font-fustat-medium text-md">
-                            <Page
-                                items={canvasItems}
-                                selectedId={selectedId}
-                                onSelect={setSelectedId}
-                                onRemove={removeFromCanvas}
-                                activeCursor={activeCursor}
-                            />
-                        </div>
-                    </div>
+                    <div className="flex-1 h-full" />
 
-                    <div className={`w-1/6 flex flex-col ${darkMode ? "bg-[#111317]" : "bg-[#EBFFF2]"}`}>
+                    <Canvas canvasColor={canvasColor} activeCursor={activeCursor}>
+                        <Page
+                            items={canvasItems}
+                            selectedId={selectedId}
+                            onSelect={setSelectedId}
+                            onRemove={removeFromCanvas}
+                            activeCursor={activeCursor}
+                        />
+                    </Canvas>
+
+                    <div className={`w-1/6 flex flex-col relative z-10 ${darkMode ? "bg-[#111317]" : "bg-[#EBFFF2]"}`}>
                         <div className="flex flex-row items-center w-full px-4 h-20 justify-between shrink-0">
                             <div className="rounded-full px-4 h-8 text-md bg-[#B5446E] text-[#EBFFF2] font-fustat-medium items-center justify-center flex">
                                 Publish Portfolio
@@ -365,7 +363,7 @@ function App() {
                     </div>
                 </div>
 
-                <div className="relative">
+                <div className="relative z-10">
                     <div className="w-1/3 absolute left-1/2 -translate-x-1/2 bottom-8">
                         <div className={`py-2 px-8 flex items-center justify-between rounded-2xl fa-xl
                             ${darkMode ? "text-[#EBFFF2] bg-[#1F1F1F]" : "text-[#1F1F1F] bg-[#EBFFF2]"}`}
