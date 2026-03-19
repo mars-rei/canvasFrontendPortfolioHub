@@ -7,11 +7,15 @@ import Image from './Image';
 import Slides from './Slides';
 import Text from './Text';
 
-import Star from './shapes/Star';
-import Square from './shapes/Square';
-import Circle from './shapes/Circle';
-import Rectangle from './shapes/Rectangle';
-import Triangle from './shapes/Triangle';
+import Star from './shapes/ordinary/Star';
+import Square from './shapes/ordinary/Square';
+import Circle from './shapes/ordinary/Circle';
+import Rectangle from './shapes/ordinary/Rectangle';
+import Triangle from './shapes/ordinary/Triangle';
+
+import Shape1 from './shapes/svgShapesByMo/Shape1';
+import Shape2 from './shapes/svgShapesByMo/Shape2';
+
 
 // the last component to be declared is on the top layer
 
@@ -38,10 +42,16 @@ function Page({ items, selectedId, onSelect, onRemove, activeCursor }) {
             activeCursor,
         };
 
+        // components
         if (item.type === 'image') return <Image {...props} src={item.src} />;
         if (item.type === 'slides') return <Slides {...props} />;
         if (item.type === 'carousel') return <Carousel {...props} />;
         if (item.type === 'text') return <Text {...props} />;
+
+        // ordinary shapes
+
+
+        // shapesByMo
 
         // integrating
         if (item.type === 'star') return <Star {...props} />;
@@ -49,6 +59,9 @@ function Page({ items, selectedId, onSelect, onRemove, activeCursor }) {
         if (item.type === 'circle') return <Circle {...props} />;
         if (item.type === 'rectangle') return <Rectangle {...props} />;
         if (item.type === 'triangle') return <Triangle {...props} />;
+
+        if (item.type === 'shape1') return <Shape1 {...props} />;
+        if (item.type === 'shape2') return <Shape2 {...props} />;
     };
 
     return (
@@ -66,8 +79,13 @@ function Page({ items, selectedId, onSelect, onRemove, activeCursor }) {
                     {/* height and width of page */}
                     <p>720 x 480</p> 
                 </div>
-                <div className="bounds w-216 h-144 bg-[#B5446E]" onClick={() => onSelect(null)}>
-                    <div className="offsetParent">
+                <div 
+                    className="bounds w-216 h-144 bg-[#B5446E] relative" 
+                    onClick={() => onSelect(null)}
+                    onDragStart={(e) => e.stopPropagation()}
+                    onDrag={(e) => e.stopPropagation()}
+                >
+                    <div className="offsetParent relative w-full h-full">
                         {items.map(showItem)}
                     </div>
                 </div>

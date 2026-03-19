@@ -1,6 +1,8 @@
+// just need to manage colouring
+
 import { Rnd } from "react-rnd";
 
-function Square({ src, isSelected, onSelect, activeCursor }) {
+function Rectangle({ isSelected, onSelect, activeCursor }) {
 
     const locked = activeCursor === 'hand';
 
@@ -13,16 +15,20 @@ function Square({ src, isSelected, onSelect, activeCursor }) {
     return (
         <Rnd
             style={style}
-            default={{ x: 0, y: 0, width: 100, height: 100 }}
-            bounds=".bounds"
+            default={{ x: 0, y: 0, width: 100, height: 60 }}
+            bounds="parent" 
             disableDragging={locked}
             enableResizing={!locked}
+            onDragStart={(e) => e.stopPropagation()}
+            onResizeStart={(e) => e.stopPropagation()}
             onMouseDown={(e) => { if (locked) return; e.stopPropagation(); onSelect(); }}
             className={`group ${isSelected ? "outline-2 outline-[#003c66]" : "hover:outline-2 hover:outline-[#003c66]"}`}
         >
-            <i className="fa fa-square fa-4x text-amber-300" draggable={false} />
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
+                <rect width="100%" height="100%" fill="rgb(84, 84, 84)"/>
+            </svg>
         </Rnd>
     );
 }
 
-export default Square;
+export default Rectangle;

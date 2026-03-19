@@ -303,6 +303,10 @@ function App() {
                                             <i className="fa fa-square fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Square</span>
                                         </div>
+                                        <div onClick={() => addToCanvas('rectangle')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <i className="fa fa-square fa-2x text-[#B5446E]"></i>
+                                            <span className="text-sm">Rectangle</span>
+                                        </div>
                                         <div onClick={() => addToCanvas('triangle')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-play fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Triangle</span>
@@ -317,6 +321,20 @@ function App() {
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* for shapes by mo */}
+                                <div className={`mt-12 scrollbar-hide border-[#111317] ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
+                                    <div className="grid grid-cols-2 gap-2 px-4">
+                                        <div onClick={() => addToCanvas('shape1')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <i className="fa fa-shapes fa-2x text-[#B5446E]"></i>
+                                            <span className="text-sm">Shape 1</span>
+                                        </div>
+                                        <div onClick={() => addToCanvas('shape2')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <i className="fa fa-shapes fa-2x text-[#B5446E]"></i>
+                                            <span className="text-sm">Shape 2</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         ) : openEditPanel === 'pages' ? (
                             /* pages creation menu */
@@ -326,30 +344,53 @@ function App() {
                                         <p>Pages</p>
                                     </div>
                                 </div>
-                                <div className={`scrollbar-hide border-[#111317] px-4 space-y-2 ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
-                                    <div className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
-                                        <i className="fa fa-mobile-screen-button fa-lg text-[#B5446E] w-6 text-center"></i>
-                                        <span className="font-fustat-medium">Mobile</span>
+                                <div className={`scrollbar-hide border-[#111317] px-4 space-y-4 ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
+                                    <div className="space-y-2">
+                                        <div className="flex flex-row items-center space-x-2 px-2 py-1">
+                                            <i className="fa fa-mobile-screen-button fa-lg text-[#B5446E] w-6 text-center"></i>
+                                            <span className="font-fustat-medium">Mobile</span>
+                                        </div>
+                                        <div className="flex flex-row items-center space-x-2 px-8 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <span className="font-fustat-medium">iPhone SE - 320 x 568</span>
+                                        </div>
                                     </div>
 
-                                    <div className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
-                                        <i className="fa fa-tablet-screen-button fa-lg text-[#B5446E] w-6 text-center"></i>
-                                        <span className="font-fustat-medium">Tablet</span>
+
+                                    <div className="space-y-2">
+                                        <div className="flex flex-row items-center space-x-2 px-2 py-1">
+                                            <i className="fa fa-tablet-screen-button fa-lg text-[#B5446E] w-6 text-center"></i>
+                                            <span className="font-fustat-medium">Tablet</span>
+                                        </div>
                                     </div>
 
-                                    <div className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
-                                        <i className="fa fa-laptop fa-lg text-[#B5446E] w-6 text-center"></i>
-                                        <span className="font-fustat-medium">Laptop</span>
+
+                                    <div className="space-y-2">
+                                        <div className="flex flex-row items-center space-x-2 px-2 py-1">
+                                            <i className="fa fa-laptop fa-lg text-[#B5446E] w-6 text-center"></i>
+                                            <span className="font-fustat-medium">Laptop</span>
+                                        </div>
+                                        <div className="flex flex-row items-center space-x-2 px-8 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <span className="font-fustat-medium">HD - 1280 × 720</span>
+                                        </div>
                                     </div>
 
-                                    <div className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
-                                        <i className="fa fa-display fa-lg text-[#B5446E] w-6 text-center"></i>
-                                        <span className="font-fustat-medium">Desktop</span>
+
+                                    <div className="space-y-2">
+                                        <div className="flex flex-row items-center space-x-2 px-2 py-1">
+                                            <i className="fa fa-display fa-lg text-[#B5446E] w-6 text-center"></i>
+                                            <span className="font-fustat-medium">Desktop</span>
+                                        </div>
                                     </div>
 
-                                    <div className="flex flex-row items-center space-x-2 px-2 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
-                                        <i className="fa fa-note-sticky fa-lg text-[#B5446E] w-6 text-center"></i>
-                                        <span className="font-fustat-medium">Paper</span>
+
+                                    <div className="space-y-2">
+                                        <div className="flex flex-row items-center space-x-2 px-2 py-1">
+                                            <i className="fa fa-note-sticky fa-lg text-[#B5446E] w-6 text-center"></i>
+                                            <span className="font-fustat-medium">Paper</span>
+                                        </div>
+                                        <div className="flex flex-row items-center space-x-2 px-8 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                            <span className="font-fustat-medium">A4 - 2480 × 3508</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

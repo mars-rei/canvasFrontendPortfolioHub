@@ -14,9 +14,11 @@ function Text({ isSelected, onSelect, activeCursor }) {
         <Rnd
             style={style}
             default={{ x: 0, y: 0, width: 190, height: 60 }}
-            bounds=".bounds"
+            bounds="parent" 
             disableDragging={locked}
             enableResizing={!locked}
+            onDragStart={(e) => e.stopPropagation()}
+            onResizeStart={(e) => e.stopPropagation()}
             onMouseDown={(e) => { if (locked) return; e.stopPropagation(); onSelect(); }}
             className={`group p-4 ${isSelected ? "outline-2 outline-[#003c66]" : "hover:outline-2 hover:outline-[#003c66]"}`}
         >
