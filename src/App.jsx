@@ -7,7 +7,7 @@ import Canvas from './layout/Canvas';
 function App() {
 
     // to set the colour of the whole canvas (where the page canvases sit)
-    const [canvasColor, setCanvasColor] = useState('#1d2025');
+    const [canvasColour, setCanvasColour] = useState('#1d2025'); 
 
     // for adding items to canvas
     const [canvasItems, setCanvasItems] = useState([]);
@@ -40,7 +40,7 @@ function App() {
     };
 
 
-    // fr toggling the right right-side panel for each element selected for styling them
+    // for toggling the right right-side panel for each element selected for styling them
     const [itemStyles, setItemStyles] = useState({});
 
     const onStyleChange = (id, key, value) => {
@@ -49,6 +49,8 @@ function App() {
             [id]: { ...prev[id], [key]: value }
         }));
     };
+
+    const [pageColour, setPageColour] = useState('#B5446E'); // temporary for single hard coded page atm
 
     // find element for menu to show
     const selectedItem = canvasItems.find(i => i.id === selectedId) ?? null;
@@ -110,7 +112,7 @@ function App() {
 
     return (
         <>
-            <div style={{ backgroundColor: canvasColor }}>
+            <div style={{ backgroundColor: canvasColour }}>
                 <div className="h-screen w-screen flex flex-row">
                     <div className={`w-1/6 flex flex-col relative z-10
                         ${darkMode ? "bg-[#111317]" : "bg-[#EBFFF2]"}`}
@@ -285,7 +287,7 @@ function App() {
                     {/* canvas */}
                     <div className="flex-1 h-full" />
 
-                    <Canvas canvasColor={canvasColor} activeCursor={activeCursor}>
+                    <Canvas canvasColour={canvasColour} activeCursor={activeCursor} onSelect={setSelectedId}>
                         <Page
                             items={canvasItems}
                             itemStyles={itemStyles}          
@@ -293,6 +295,7 @@ function App() {
                             onSelect={setSelectedId}
                             onRemove={removeFromCanvas}
                             activeCursor={activeCursor}
+                            pageColour={pageColour} 
                         />
                     </Canvas>
 
@@ -426,10 +429,29 @@ function App() {
                                         />
                                     </>
                                 ) : (
-                                    // default is colour of canvas
+                                    /* default right side menu bar - canvas or page atm */
                                     <>
-                                        <p className="text-lg font-fustat-semibold mb-4">Canvas</p>
-                                        <ColourPicker color={canvasColor} onChange={setCanvasColor} darkMode={darkMode} />
+                                        {selectedId === null ? (
+                                            <>
+                                                <p className="text-lg font-fustat-semibold mb-1">Canvas</p>
+                                                <ColourPicker color={canvasColour} onChange={setCanvasColour} darkMode={darkMode} />
+                                            </>
+                                        ) : selectedId === 'page' ? (
+                                            <>
+                                                <p className="text-lg font-fustat-semibold mb-1">Page</p>
+                                                <ColourPicker color={pageColour} onChange={setPageColour} darkMode={darkMode} />
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="text-lg font-fustat-semibold mb-1 capitalize">{selectedItem?.type}</p>
+
+                                                <ColourPicker
+                                                    color={itemStyles[selectedItem?.id]?.fill ?? '#545454'}
+                                                    onChange={val => onStyleChange(selectedItem?.id, 'fill', val)}
+                                                    darkMode={darkMode}
+                                                />
+                                            </>
+                                        )}
                                     </>
                                 )}
                             </div>

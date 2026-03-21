@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from 'react';
 const dragInertia = 32 // increased to slow down drag
 const zoomBy = 0.01 // lowered to slow down zoom
 
-function Canvas({ canvasColor, activeCursor, children }) {
+function Canvas({ canvasColour, activeCursor, onSelect, children }) {
 
     const containerRef = useRef(null)
 
@@ -66,7 +66,7 @@ function Canvas({ canvasColor, activeCursor, children }) {
         >
             <div
                 style={{
-                    backgroundColor: canvasColor,
+                    backgroundColor: canvasColour,
                     cursor: activeCursor === 'hand' ? 'grab' : 'default',
                     minHeight: '400vh', // to make canvas somewhat infinite
                     minWidth: '400vw', // to make canvas somewhat infinite
@@ -78,6 +78,7 @@ function Canvas({ canvasColor, activeCursor, children }) {
                     alignItems: 'center',
                     justifyContent: 'center',
                 }}
+                onClick={() => onSelect(null)} 
                 onDragStart={e => {
                     const preview = document.createElement('div')
                     preview.style.display = 'none'

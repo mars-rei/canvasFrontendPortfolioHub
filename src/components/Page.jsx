@@ -19,7 +19,7 @@ import Shape2 from './shapes/svgShapesByMo/Shape2';
 
 // the last component to be declared is on the top layer
 
-function Page({ items, itemStyles, selectedId, onSelect, onRemove, activeCursor }) {
+function Page({ items, itemStyles, selectedId, onSelect, onRemove, activeCursor, pageColour }) {
 
     // for deleting components from canvas
     useEffect(() => {
@@ -82,8 +82,9 @@ function Page({ items, itemStyles, selectedId, onSelect, onRemove, activeCursor 
                     <p>720 x 480</p> 
                 </div>
                 <div 
-                    className="bounds w-216 h-144 bg-[#B5446E] relative" 
-                    onClick={() => onSelect(null)}
+                    className="bounds w-216 h-144 relative" 
+                    style={{ backgroundColor: pageColour }}
+                    onClick={(e) => { e.stopPropagation(); onSelect('page'); }}
                     onDragStart={(e) => e.stopPropagation()}
                     onDrag={(e) => e.stopPropagation()}
                 >
