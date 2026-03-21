@@ -1,6 +1,7 @@
 import { Rnd } from "react-rnd";
 
-function Text({ isSelected, onSelect, activeCursor }) {
+function Text({ isSelected, onSelect, activeCursor, itemStyle = {} }) {
+    const colour   = itemStyle.fill;
     
     const locked = activeCursor === 'hand';
 
@@ -21,14 +22,16 @@ function Text({ isSelected, onSelect, activeCursor }) {
             onResizeStart={(e) => e.stopPropagation()}
             onMouseDown={(e) => { if (locked) return; e.stopPropagation(); onSelect(); }}
             className={`group p-4 ${isSelected ? "outline-2 outline-[#003c66]" : "hover:outline-2 hover:outline-[#003c66]"}`}
+            onClick={(e) => e.stopPropagation()} 
         >
             <div
                 contentEditable={!locked}
                 suppressContentEditableWarning
                 onMouseDown={(e) => e.stopPropagation()}
                 data-placeholder="Enter your text..."
+                style={{ color: itemStyle.fill ?? '#ffffff' }}
                 className={`w-full h-full flex items-center justify-center text-center scrollbar-hide font-extrabold text-xl 
-                        text-white bg-transparent outline-none overflow-hidden empty:before:content-[attr(data-placeholder)] 
+                        bg-transparent outline-none overflow-hidden empty:before:content-[attr(data-placeholder)] 
                         empty:before:text-white/40 
                         ${locked ? 'cursor-grab pointer-events-none' : 'cursor-text'}`}
             />

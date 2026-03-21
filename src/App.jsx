@@ -16,6 +16,17 @@ function App() {
         setCanvasItems(prev => [...prev, { id: Date.now(), type, src }]);
     };
 
+    /*
+    const addToCanvas = (type, src = null) => {
+        const id = Date.now();
+        setCanvasItems(prev => [...prev, { id, type, src }]);
+        setItemStyles(prev => ({
+            ...prev,
+            [id]: { fill: defaultColour[type] ?? '#545454' }
+        }));
+    };
+    */
+
     // for removing items from canvas
     const [selectedId, setSelectedId] = useState(null);
 
@@ -51,6 +62,17 @@ function App() {
     };
 
     const [pageColour, setPageColour] = useState('#B5446E'); // temporary for single hard coded page atm
+
+    const defaultColour = { // default colour for components
+        circle: '#545454',
+        square: '#545454',
+        rectangle: '#545454',
+        triangle: '#545454',
+        star: '#545454',
+        shape1: '#545454',
+        shape2: '#545454',
+        text: '#ffffff',
+    };
 
     // find element for menu to show
     const selectedItem = canvasItems.find(i => i.id === selectedId) ?? null;
@@ -417,41 +439,27 @@ function App() {
                             </div>
                         ) : (
                             <div className={`flex-1 p-4 border-t-2 ${darkMode ? "border-[#EBFFF2] text-[#EBFFF2]" : "border-[#111317] text-[#111317]"}`}>
-                                {selectedItem ? (
-                                    // to change colour (and styles later on) of selected component on canvas
+                                {selectedId === null ? (
                                     <>
-                                        <p className="text-lg font-fustat-semibold mb-1 capitalize">{selectedItem.type}</p>
-
-                                        <ColourPicker
-                                            color={itemStyles[selectedItem.id]?.fill ?? '#545454'}
-                                            onChange={val => onStyleChange(selectedItem.id, 'fill', val)}
-                                            darkMode={darkMode}
-                                        />
+                                        {/* default styling menu is for colouring canvas */}
+                                        <p className="text-lg font-fustat-semibold mb-1">Canvas</p>
+                                        <ColourPicker color={canvasColour} onChange={setCanvasColour} darkMode={darkMode} />
+                                    </>
+                                ) : selectedId === 'page' ? (
+                                    <>
+                                        {/* styling menu for colouring page */}
+                                        <p className="text-lg font-fustat-semibold mb-1">Page</p>
+                                        <ColourPicker color={pageColour} onChange={setPageColour} darkMode={darkMode} />
                                     </>
                                 ) : (
-                                    /* default right side menu bar - canvas or page atm */
                                     <>
-                                        {selectedId === null ? (
-                                            <>
-                                                <p className="text-lg font-fustat-semibold mb-1">Canvas</p>
-                                                <ColourPicker color={canvasColour} onChange={setCanvasColour} darkMode={darkMode} />
-                                            </>
-                                        ) : selectedId === 'page' ? (
-                                            <>
-                                                <p className="text-lg font-fustat-semibold mb-1">Page</p>
-                                                <ColourPicker color={pageColour} onChange={setPageColour} darkMode={darkMode} />
-                                            </>
-                                        ) : (
-                                            <>
-                                                <p className="text-lg font-fustat-semibold mb-1 capitalize">{selectedItem?.type}</p>
-
-                                                <ColourPicker
-                                                    color={itemStyles[selectedItem?.id]?.fill ?? '#545454'}
-                                                    onChange={val => onStyleChange(selectedItem?.id, 'fill', val)}
-                                                    darkMode={darkMode}
-                                                />
-                                            </>
-                                        )}
+                                        {/* styling menu for components such as shapes and text */}
+                                        <p className="text-lg font-fustat-semibold mb-1 capitalize">{selectedItem?.type}</p>
+                                        <ColourPicker
+                                            color={itemStyles[selectedItem.id]?.fill ?? defaultColour[selectedItem.type]}
+                                            onChange={val => onStyleChange(selectedItem?.id, 'fill', val)}
+                                            darkMode={darkMode}
+                                        />
                                     </>
                                 )}
                             </div>
