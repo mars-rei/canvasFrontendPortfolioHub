@@ -40,6 +40,20 @@ function App() {
     };
 
 
+    // fr toggling the right right-side panel for each element selected for styling them
+    const [itemStyles, setItemStyles] = useState({});
+
+    const onStyleChange = (id, key, value) => {
+        setItemStyles(prev => ({
+            ...prev,
+            [id]: { ...prev[id], [key]: value }
+        }));
+    };
+
+    // find element for menu to show
+    const selectedItem = canvasItems.find(i => i.id === selectedId) ?? null;
+
+
     // panel for editing (adding a shape or page)
     const [openEditPanel, setOpenEditPanel] = useState(null);
 
@@ -48,8 +62,10 @@ function App() {
     };
 
 
+
     // for toggling cursor to edit or move around canvas
     const [activeCursor, setActiveCursor] = useState('pointer');
+
 
 
     // project directory
@@ -272,6 +288,7 @@ function App() {
                     <Canvas canvasColor={canvasColor} activeCursor={activeCursor}>
                         <Page
                             items={canvasItems}
+                            itemStyles={itemStyles}          
                             selectedId={selectedId}
                             onSelect={setSelectedId}
                             onRemove={removeFromCanvas}
@@ -279,6 +296,7 @@ function App() {
                         />
                     </Canvas>
 
+                    {/* right side bar menu - mainly for editing styles of components on the canvas */}
                     <div className={`w-1/6 flex flex-col relative z-10 ${darkMode ? "bg-[#111317]" : "bg-[#EBFFF2]"}`}>
                         <div className="flex flex-row items-center w-full px-4 h-20 justify-between shrink-0">
                             <div className="rounded-full px-4 h-8 text-md bg-[#B5446E] text-[#EBFFF2] font-fustat-medium items-center justify-center flex">
@@ -299,23 +317,23 @@ function App() {
                                 </div>
                                 <div className={`scrollbar-hide border-[#111317] ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
                                     <div className="grid grid-cols-2 gap-2 px-4">
-                                        <div onClick={() => addToCanvas('square')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => { addToCanvas('square'); toggleEditPanel('shapes'); }} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-square fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Square</span>
                                         </div>
-                                        <div onClick={() => addToCanvas('rectangle')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => { addToCanvas('rectangle'); toggleEditPanel('shapes'); }} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-square fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Rectangle</span>
                                         </div>
-                                        <div onClick={() => addToCanvas('triangle')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => { addToCanvas('triangle');  toggleEditPanel('shapes'); }} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-play fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Triangle</span>
                                         </div>
-                                        <div onClick={() => addToCanvas('circle')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => { addToCanvas('circle'); toggleEditPanel('shapes'); }} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-circle fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Circle</span>
                                         </div>
-                                        <div onClick={() => addToCanvas('star')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => { addToCanvas('star'); toggleEditPanel('shapes'); }} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-star fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Star</span>
                                         </div>
@@ -325,11 +343,11 @@ function App() {
                                 {/* for shapes by mo */}
                                 <div className={`mt-12 scrollbar-hide border-[#111317] ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
                                     <div className="grid grid-cols-2 gap-2 px-4">
-                                        <div onClick={() => addToCanvas('shape1')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => { addToCanvas('shape1'); toggleEditPanel('shapes'); }} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-shapes fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Shape 1</span>
                                         </div>
-                                        <div onClick={() => addToCanvas('shape2')} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
+                                        <div onClick={() => { addToCanvas('shape2'); toggleEditPanel('shapes'); }} className="flex flex-col items-center justify-center text-center space-y-2 p-2 hover:bg-[#B5446E]/8 rounded cursor-pointer">
                                             <i className="fa fa-shapes fa-2x text-[#B5446E]"></i>
                                             <span className="text-sm">Shape 2</span>
                                         </div>
@@ -395,10 +413,25 @@ function App() {
                                 </div>
                             </div>
                         ) : (
-                            /* default right side menu bar */
                             <div className={`flex-1 p-4 border-t-2 ${darkMode ? "border-[#EBFFF2] text-[#EBFFF2]" : "border-[#111317] text-[#111317]"}`}>
-                                <p className="text-lg font-fustat-semibold mb-4">Canvas</p>
-                                <ColourPicker color={canvasColor} onChange={setCanvasColor} darkMode={darkMode} />
+                                {selectedItem ? (
+                                    // to change colour (and styles later on) of selected component on canvas
+                                    <>
+                                        <p className="text-lg font-fustat-semibold mb-1 capitalize">{selectedItem.type}</p>
+
+                                        <ColourPicker
+                                            color={itemStyles[selectedItem.id]?.fill ?? '#545454'}
+                                            onChange={val => onStyleChange(selectedItem.id, 'fill', val)}
+                                            darkMode={darkMode}
+                                        />
+                                    </>
+                                ) : (
+                                    // default is colour of canvas
+                                    <>
+                                        <p className="text-lg font-fustat-semibold mb-4">Canvas</p>
+                                        <ColourPicker color={canvasColor} onChange={setCanvasColor} darkMode={darkMode} />
+                                    </>
+                                )}
                             </div>
                         )}
                     </div>

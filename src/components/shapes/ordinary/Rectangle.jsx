@@ -2,7 +2,9 @@
 
 import { Rnd } from "react-rnd";
 
-function Rectangle({ isSelected, onSelect, activeCursor }) {
+function Rectangle({ isSelected, onSelect, activeCursor, itemStyle = {} }) {
+
+    const fill   = itemStyle.fill ?? 'rgb(84, 84, 84)';
 
     const locked = activeCursor === 'hand';
 
@@ -23,9 +25,10 @@ function Rectangle({ isSelected, onSelect, activeCursor }) {
             onResizeStart={(e) => e.stopPropagation()}
             onMouseDown={(e) => { if (locked) return; e.stopPropagation(); onSelect(); }}
             className={`group ${isSelected ? "outline-2 outline-[#003c66]" : "hover:outline-2 hover:outline-[#003c66]"}`}
+            onClick={(e) => e.stopPropagation()} 
         >
             <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
-                <rect width="100%" height="100%" fill="rgb(84, 84, 84)"/>
+                <rect width="100%" height="100%" fill={fill}/>
             </svg>
         </Rnd>
     );

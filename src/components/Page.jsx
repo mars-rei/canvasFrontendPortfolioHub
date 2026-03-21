@@ -19,7 +19,7 @@ import Shape2 from './shapes/svgShapesByMo/Shape2';
 
 // the last component to be declared is on the top layer
 
-function Page({ items, selectedId, onSelect, onRemove, activeCursor }) {
+function Page({ items, itemStyles, selectedId, onSelect, onRemove, activeCursor }) {
 
     // for deleting components from canvas
     useEffect(() => {
@@ -34,12 +34,14 @@ function Page({ items, selectedId, onSelect, onRemove, activeCursor }) {
 
     // for rendering items onto canvas
     const showItem = (item) => {
+        const style = itemStyles?.[item.id] ?? {};
         const props = {
             key: item.id,
             isSelected: selectedId === item.id,
             onSelect: () => onSelect(item.id),
             onRemove: () => onRemove(item.id),
             activeCursor,
+            itemStyle: style, 
         };
 
         // components

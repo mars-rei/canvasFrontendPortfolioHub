@@ -2,7 +2,9 @@
 
 import { Rnd } from "react-rnd";
 
-function Circle({ src, isSelected, onSelect, activeCursor }) {
+function Circle({ isSelected, onSelect, activeCursor, itemStyle = {} }) {
+
+    const fill   = itemStyle.fill ?? 'rgb(84, 84, 84)';
 
     const locked = activeCursor === 'hand';
 
@@ -23,9 +25,10 @@ function Circle({ src, isSelected, onSelect, activeCursor }) {
             onResizeStart={(e) => e.stopPropagation()}
             onMouseDown={(e) => { if (locked) return; e.stopPropagation(); onSelect(); }}
             className={`group ${isSelected ? "outline-2 outline-[#003c66]" : "hover:outline-2 hover:outline-[#003c66]"}`}
+            onClick={(e) => e.stopPropagation()} 
         >
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-                <circle cx="50" cy="50" r="50" fill="rgb(84, 84, 84)"/>
+                <circle cx="50" cy="50" r="50" fill={fill}/>
             </svg>
         </Rnd>
     );
