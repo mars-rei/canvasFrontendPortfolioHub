@@ -1,11 +1,6 @@
 // draggable and resizable canvas edited from: https://stackblitz.com/edit/react-draggable-canvas-zoom?file=index.tsx
-// undo and redo edited from: https://konvajs.org/docs/react/Undo-Redo.html
 
 import { useRef, useState, useEffect } from 'react';
-
-// for staging
-import React, { Component } from 'react';
-import { Stage, Layer, Rect, Text } from 'react-konva';
 
 const dragInertia = 32 // increased to slow down drag
 const zoomBy = 0.01 // lowered to slow down zoom
@@ -55,44 +50,6 @@ function Canvas({ canvasColour, activeCursor, onSelect, children }) {
         return () => el.removeEventListener('wheel', handleWheel)
     }, [scale, translateX, translateY])
 
-
-    // for staging - undo and redo
-    const [position, setPosition] = React.useState({ x: 20, y: 20 });
-    // We use refs to keep history to avoid unnecessary re-renders
-    const history = React.useRef([{ x: 20, y: 20 }]);
-    const historyStep = React.useRef(0);
-
-    const handleUndo = () => {
-        if (historyStep.current === 0) {
-        return;
-        }
-        historyStep.current -= 1;
-        const previous = history.current[historyStep.current];
-        setPosition(previous);
-    };
-
-    const handleRedo = () => {
-        if (historyStep.current === history.current.length - 1) {
-        return;
-        }
-        historyStep.current += 1;
-        const next = history.current[historyStep.current];
-        setPosition(next);
-    };
-
-    const handleDragEnd = (e) => {
-        // Remove all states after current step
-        history.current = history.current.slice(0, historyStep.current + 1);
-        const pos = {
-        x: e.target.x(),
-        y: e.target.y(),
-        };
-        // Push the new state
-        history.current = history.current.concat([pos]);
-        historyStep.current += 1;
-        setPosition(pos);
-    };
-
     return (
         <div
             ref={containerRef}
@@ -137,21 +94,6 @@ function Canvas({ canvasColour, activeCursor, onSelect, children }) {
                 }}
                 draggable
             >
-                <Stage width={window.innerWidth} height={window.innerHeight}>
-                    <Layer>
-                        <Text text="undo" onClick={handleUndo} />
-                        <Text text="redo" x={40} onClick={handleRedo} />
-                        <Rect
-                        x={position.x}
-                        y={position.y}
-                        width={50}
-                        height={50}
-                        fill="black"
-                        draggable
-                        onDragEnd={handleDragEnd}
-                        />
-                    </Layer>
-                </Stage>
                 {children}
             </div>
         </div>

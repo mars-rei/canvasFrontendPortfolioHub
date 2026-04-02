@@ -16,10 +16,21 @@ import Triangle from './shapes/ordinary/Triangle';
 import Shape1 from './shapes/svgShapesByMo/Shape1';
 import Shape2 from './shapes/svgShapesByMo/Shape2';
 
-
 // the last component to be declared is on the top layer
 
-function Page({ items, itemStyles, selectedId, onSelect, onRemove, activeCursor, pageColour }) {
+function Page({ 
+    pageId,
+    pageName, 
+    onPageNameChange,
+    items, 
+    itemStyles, 
+    selectedId, 
+    onSelect, 
+    onRemove, 
+    activeCursor, 
+    pageColour,
+    dimensions = { width: 720, height: 480 } // default page dimensions
+}) {
 
     // for deleting components from canvas
     useEffect(() => {
@@ -30,7 +41,7 @@ function Page({ items, itemStyles, selectedId, onSelect, onRemove, activeCursor,
         };
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [selectedId]);
+    }, [selectedId, onRemove]);
 
     // for rendering items onto canvas
     const showItem = (item) => {
@@ -51,45 +62,65 @@ function Page({ items, itemStyles, selectedId, onSelect, onRemove, activeCursor,
         if (item.type === 'text') return <Text {...props} />;
 
         // ordinary shapes
-
-
-        // shapesByMo
-
-        // integrating
         if (item.type === 'star') return <Star {...props} />;
         if (item.type === 'square') return <Square {...props} />;
         if (item.type === 'circle') return <Circle {...props} />;
         if (item.type === 'rectangle') return <Rectangle {...props} />;
         if (item.type === 'triangle') return <Triangle {...props} />;
 
+        // shapesByMo
         if (item.type === 'shape1') return <Shape1 {...props} />;
         if (item.type === 'shape2') return <Shape2 {...props} />;
+        
+        return null;
+    };
+
+    // update page name as user types
+    const handlePageNameChange = (e) => {
+        onPageNameChange(pageId, e.target.value);
+    };
+
+    // Generate dynamic classes based on dimensions
+    const pageStyle = {
+        backgroundColor: pageColour,
+        width: dimensions.width,
+        height: dimensions.height,
+        position: 'relative',
+        overflow: 'hidden' 
     };
 
     return (
         <>
-            <div className="w-216 flex flex-col text-[#EBFFF2] font-fustat-medium text-md">
-                <div className="w-full flex flex-row justify-between">
-                    {/* page name */}
+            <div className="flex flex-col text-[#EBFFF2] font-fustat-medium text-md">
+                <div className="w-full flex flex-row justify-between mb-2">
                     <textarea 
-                        className="resize-none bg-transparent outline-none -mb-4"
+                        className="resize-none bg-transparent outline-none -mb-4 font-fustat-semibold text-lg"
                         onMouseDown={(e) => e.stopPropagation()}
                         placeholder="Enter page name..."
-                        defaultValue="Home"
+                        value={pageName}
+                        onChange={handlePageNameChange}
+                        rows={1}
+                        style={{ width: 'auto', minWidth: '100px' }}
                     />
 
-                    {/* height and width of page */}
-                    <p>720 x 480</p> 
+                    {/* page height and width */}
+                    <p className="text-sm opacity-70">{dimensions.width} x {dimensions.height}</p> 
                 </div>
                 <div 
-                    className="bounds w-216 h-144 relative" 
-                    style={{ backgroundColor: pageColour }}
+                    className="bounds relative" 
+                    style={pageStyle}
                     onClick={(e) => { e.stopPropagation(); onSelect('page'); }}
                     onDragStart={(e) => e.stopPropagation()}
                     onDrag={(e) => e.stopPropagation()}
                 >
                     <div className="offsetParent relative w-full h-full">
-                        {items.map(showItem)}
+                        {items && items.length > 0 ? (
+                            items.map(showItem)
+                        ) : (
+                            <div className="flex h-full w-full items-center justify-center">
+                                <p className="opacity-50">Add components here</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

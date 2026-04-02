@@ -9,32 +9,123 @@ function App() {
     // to set the colour of the whole canvas (where the page canvases sit)
     const [canvasColour, setCanvasColour] = useState('#1d2025'); 
 
-    // for adding items to canvas
-    const [canvasItems, setCanvasItems] = useState([]);
+    /* ---------- pages ---------- */
+    const [pages, setPages] = useState([
+        { 
+            id: 'p1', 
+            name: 'Home', 
+            colour: '#B5446E', 
+            items: [], 
+            itemStyles: {},
+            dimensions: { width: 720, height: 480 } 
+        }
+    ]);
+    const [currentPageId, setCurrentPageId] = useState('p1');
 
-    const addToCanvas = (type, src = null) => {
-        setCanvasItems(prev => [...prev, { id: Date.now(), type, src }]);
+    // to get current page data
+    const currentPage = pages.find(p => p.id === currentPageId);
+    const currentPageItems = currentPage?.items || [];
+    const currentPageColour = currentPage?.colour || '#B5446E';
+    const currentItemStyles = currentPage?.itemStyles || {};
+
+    // new page
+    const addPage = (pageConfig) => {
+        const newPageId = `page-${Date.now()}`;
+        setPages(prev => [...prev, {
+            id: newPageId,
+            name: pageConfig.name || 'Untitled',
+            colour: pageConfig.colour || '#B5446E',
+            items: [],
+            itemStyles: {},
+            dimensions: pageConfig.dimensions || { width: 720, height: 480 }
+        }]);
+        setCurrentPageId(newPageId);
     };
 
-    /*
+    // defaults for a new page
+    const [newPageName, setNewPageName] = useState('Untitled Page');
+    const [newPageColour, setNewPageColour] = useState('#B5446E');
+    const [selectedDimensions, setSelectedDimensions] = useState('720x480');
+
+    // delete page
+    const removePage = (pageId) => {
+        if (pages.length === 1) {
+            alert("Cannot remove the last page");
+            return;
+        }
+        
+        setPages(prev => prev.filter(p => p.id !== pageId));
+        
+        // If removing current page, switch to another page
+        if (currentPageId === pageId) {
+            const remainingPages = pages.filter(p => p.id !== pageId);
+            if (remainingPages.length > 0) {
+                setCurrentPageId(remainingPages[0].id);
+            }
+        }
+    };
+
+    // update page name
+    const updatePageName = (pageId, newName) => {
+        setPages(prev => prev.map(page => 
+            page.id === pageId ? { ...page, name: newName } : page
+        ));
+    };
+
+    // update page colour
+    const updatePageColour = (pageId, newColour) => {
+        setPages(prev => prev.map(page => 
+            page.id === pageId ? { ...page, colour: newColour } : page
+        ));
+    };
+
+    // add elements to current page on canvas
     const addToCanvas = (type, src = null) => {
-        const id = Date.now();
-        setCanvasItems(prev => [...prev, { id, type, src }]);
-        setItemStyles(prev => ({
-            ...prev,
-            [id]: { fill: defaultColour[type] ?? '#545454' }
+        setPages(prev => prev.map(page => {
+            if (page.id === currentPageId) {
+                return {
+                    ...page,
+                    items: [...page.items, { id: Date.now(), type, src }]
+                };
+            }
+            return page;
         }));
     };
-    */
 
-    // for removing items from canvas
-    const [selectedId, setSelectedId] = useState(null);
-
+    // remove elements from current page on canvas
     const removeFromCanvas = (id) => {
-        setCanvasItems(prev => prev.filter(item => item.id !== id));
+        setPages(prev => prev.map(page => {
+            if (page.id === currentPageId) {
+                return {
+                    ...page,
+                    items: page.items.filter(item => item.id !== id)
+                };
+            }
+            return page;
+        }));
         setSelectedId(null);
     };
 
+    // update styles of elements of current page on canvas
+    const onStyleChange = (id, key, value) => {
+        setPages(prev => prev.map(page => {
+            if (page.id === currentPageId) {
+                const currentStyles = page.itemStyles || {};
+                return {
+                    ...page,
+                    itemStyles: {
+                        ...currentStyles,
+                        [id]: { ...currentStyles[id], [key]: value }
+                    }
+                };
+            }
+            return page;
+        }));
+    };
+
+
+    // for removing items from canvas
+    const [selectedId, setSelectedId] = useState(null);
 
     // for opening component panels (on the left)
     const [openPanel, setOpenPanel] = useState(null);
@@ -50,20 +141,8 @@ function App() {
         setOpenFolder(prev => prev.name === name ? { panel: null, name: null } : { panel, name });
     };
 
-
-    // for toggling the right right-side panel for each element selected for styling them
-    const [itemStyles, setItemStyles] = useState({});
-
-    const onStyleChange = (id, key, value) => {
-        setItemStyles(prev => ({
-            ...prev,
-            [id]: { ...prev[id], [key]: value }
-        }));
-    };
-
-    const [pageColour, setPageColour] = useState('#B5446E'); // temporary for single hard coded page atm
-
-    const defaultColour = { // default colour for components
+    // default colour for components
+    const defaultColour = { 
         circle: '#545454',
         square: '#545454',
         rectangle: '#545454',
@@ -75,8 +154,7 @@ function App() {
     };
 
     // find element for menu to show
-    const selectedItem = canvasItems.find(i => i.id === selectedId) ?? null;
-
+    const selectedItem = currentPageItems.find(i => i.id === selectedId) ?? null;
 
     // panel for editing (adding a shape or page)
     const [openEditPanel, setOpenEditPanel] = useState(null);
@@ -85,12 +163,8 @@ function App() {
         setOpenEditPanel(prev => prev === panel ? null : panel);
     };
 
-
-
     // for toggling cursor to edit or move around canvas
     const [activeCursor, setActiveCursor] = useState('pointer');
-
-
 
     // project directory
     const projects = {
@@ -128,7 +202,6 @@ function App() {
     // shapes library
     const shapes = ['square', 'triangle', 'circle', 'star'];
 
-
     // for toggling dark and light mode
     const [darkMode, setDarkMode] = useState(false);
 
@@ -158,20 +231,72 @@ function App() {
                                 <i className="fa fa-search fa-sm"></i>
                                 <p>Search</p>
                             </div>
-                            <div className={`text-lg font-fustat-semibold
-                                ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}
-                            >
-                                <p>Pages</p>
-                                <div className="text-base font-fustat-medium hover:bg-[#B5446E]/8 pl-3 py-1 rounded-md">
-                                    <p>Home</p>
+
+                            {/* pages */}
+                            <div className={`text-lg font-fustat-semibold ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
+                                <div className="flex flex-row items-center justify-between">
+                                    <p className="pb-2">Pages</p>
+                                    <button 
+                                        onClick={() => toggleEditPanel('pages')}
+                                        className="hover:text-[#B5446E] text-sm"
+                                    >
+                                        <i className="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div className="text-base font-fustat-medium space-y-2">
+                                    {pages.map(page => (
+                                        <div 
+                                            key={page.id}
+                                            className={`flex flex-row items-center justify-between pl-3 py-1 rounded-md cursor-pointer
+                                                ${currentPageId === page.id ? 'bg-[#B5446E]/20' : 'hover:bg-[#B5446E]/8'}`}
+                                            onClick={() => setCurrentPageId(page.id)}
+                                        >
+                                            <div className="flex flex-row items-center space-x-2">
+                                                <i className="fa fa-file fa-xs text-[#B5446E]"></i>
+                                                <span>{page.name}</span>
+                                            </div>
+                                            {pages.length > 1 && (
+                                                <button 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        removePage(page.id);
+                                                    }}
+                                                    className="text-[#872328] text-xs mr-2 cursor-pointer"
+                                                >
+                                                    <i className="fa fa-trash"></i>
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
-                            <div className={`text-lg font-fustat-semibold
-                                ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}
-                            >
-                                <p>Layers</p>
-                                <div className="text-base font-fustat-medium hover:bg-[#B5446E]/8 pl-3 py-1 rounded-md">
-                                    {/*add components as added to canvas*/}
+
+                            {/* layers */}
+                            <div className={`text-lg font-fustat-semibold ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
+                                <p className="pb-2">Layers</p>
+                                <div className="text-base font-fustat-medium space-y-2">
+                                    {currentPageItems.map((item) => (
+                                        <div 
+                                            key={item.id}
+                                            className={`flex flex-row items-center justify-between pl-3 py-1 rounded-md cursor-pointer
+                                                ${selectedId === item.id ? 'bg-[#B5446E]/20' : 'hover:bg-[#B5446E]/8'}`}
+                                            onClick={() => setSelectedId(item.id)}
+                                        >
+                                            <div className="flex flex-row items-center space-x-2">
+                                                <i className="fa fa-shapes fa-xs text-[#B5446E]"></i>
+                                                <span className="capitalize">{item.type}</span>
+                                            </div>
+                                            <button 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    removeFromCanvas(item.id);
+                                                }}
+                                                className="text-[#872328] text-xs mr-2 cursor-pointer"
+                                            >
+                                                <i className="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -311,13 +436,17 @@ function App() {
 
                     <Canvas canvasColour={canvasColour} activeCursor={activeCursor} onSelect={setSelectedId}>
                         <Page
-                            items={canvasItems}
-                            itemStyles={itemStyles}          
+                            pageId={currentPageId}
+                            pageName={currentPage.name}
+                            onPageNameChange={updatePageName}
+                            items={currentPageItems}
+                            itemStyles={currentItemStyles}          
                             selectedId={selectedId}
                             onSelect={setSelectedId}
                             onRemove={removeFromCanvas}
                             activeCursor={activeCursor}
-                            pageColour={pageColour} 
+                            pageColour={currentPageColour}
+                            dimensions={currentPage.dimensions}
                         />
                     </Canvas>
 
@@ -384,60 +513,72 @@ function App() {
                             <div>
                                 <div className={`space-y-4 p-4 border-t-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}>
                                     <div className={`space-y-2 text-lg font-fustat-semibold ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
-                                        <p>Pages</p>
+                                        <p>Add new page</p>
                                     </div>
                                 </div>
-                                <div className={`scrollbar-hide border-[#111317] px-4 space-y-4 ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
-                                    <div className="space-y-2">
-                                        <div className="flex flex-row items-center space-x-2 px-2 py-1">
-                                            <i className="fa fa-mobile-screen-button fa-lg text-[#B5446E] w-6 text-center"></i>
-                                            <span className="font-fustat-medium">Mobile</span>
-                                        </div>
-                                        <div className="flex flex-row items-center space-x-2 px-8 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
-                                            <span className="font-fustat-medium">iPhone SE - 320 x 568</span>
-                                        </div>
+
+                                <div className={`scrollbar-hide space-y-4 text-md font-fustat-semibold border-[#111317] ${darkMode ? "text-[#EBFFF2]" : "text-[#111317]"}`}>
+                                    {/* page name input */}
+                                    <div className="px-4">
+                                        <p className="text-md font-fustat-semibold mb-1">Page Name</p>
+                                        <input 
+                                            type="text"
+                                            value={newPageName}
+                                            onChange={(e) => setNewPageName(e.target.value)}
+                                            className={`bg-transparent flex flex-row items-center w-full px-2 py-1 border-2 rounded-md text-base font-fustat-medium space-x-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}                                            
+                                            placeholder="Enter page name..."
+                                        />
                                     </div>
 
-
-                                    <div className="space-y-2">
-                                        <div className="flex flex-row items-center space-x-2 px-2 py-1">
-                                            <i className="fa fa-tablet-screen-button fa-lg text-[#B5446E] w-6 text-center"></i>
-                                            <span className="font-fustat-medium">Tablet</span>
-                                        </div>
+                                    {/* page colour picker */}
+                                    <div className="px-4">
+                                        <p className="text-md font-fustat-semibold mb-1">Page Colour</p>
+                                        <ColourPicker 
+                                            color={newPageColour}
+                                            onChange={setNewPageColour}
+                                            darkMode={darkMode}
+                                        />
                                     </div>
 
-
-                                    <div className="space-y-2">
-                                        <div className="flex flex-row items-center space-x-2 px-2 py-1">
-                                            <i className="fa fa-laptop fa-lg text-[#B5446E] w-6 text-center"></i>
-                                            <span className="font-fustat-medium">Laptop</span>
-                                        </div>
-                                        <div className="flex flex-row items-center space-x-2 px-8 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
-                                            <span className="font-fustat-medium">HD - 1280 × 720</span>
-                                        </div>
+                                    {/* screen size input */}
+                                    <div className="px-4">
+                                        <p className="text-md font-fustat-semibold mb-1">Dimensions</p>
+                                        <select 
+                                            value={selectedDimensions} 
+                                            onChange={(e) => setSelectedDimensions(e.target.value)}
+                                            className={`bg-transparent flex flex-row items-center w-full px-2 py-1 border-2 rounded-md text-base font-fustat-medium space-x-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#111317]"}`}      
+                                        >
+                                            <option value="720x480">720 x 480</option>
+                                            <option value="1280x720">1280 x 720</option>
+                                            <option value="1920x1080">1920 x 1080</option>
+                                            <option value="2480x3508">A4 - 2480 x 3508</option>
+                                        </select>
                                     </div>
 
+                                    <div className="px-4 flex justify-center">
+                                        <button 
+                                            onClick={() => {
+                                                const [width, height] = selectedDimensions.split('x').map(Number);
+                                                addPage({ 
+                                                    name: newPageName, 
+                                                    colour: newPageColour, 
+                                                    dimensions: { width, height } 
+                                                });
+                                                toggleEditPanel('pages');
 
-                                    <div className="space-y-2">
-                                        <div className="flex flex-row items-center space-x-2 px-2 py-1">
-                                            <i className="fa fa-display fa-lg text-[#B5446E] w-6 text-center"></i>
-                                            <span className="font-fustat-medium">Desktop</span>
-                                        </div>
-                                    </div>
-
-
-                                    <div className="space-y-2">
-                                        <div className="flex flex-row items-center space-x-2 px-2 py-1">
-                                            <i className="fa fa-note-sticky fa-lg text-[#B5446E] w-6 text-center"></i>
-                                            <span className="font-fustat-medium">Paper</span>
-                                        </div>
-                                        <div className="flex flex-row items-center space-x-2 px-8 py-1 hover:bg-[#B5446E]/8 rounded cursor-pointer">
-                                            <span className="font-fustat-medium">A4 - 2480 × 3508</span>
-                                        </div>
+                                                setNewPageName('Untitled Page');
+                                                setNewPageColour('#B5446E');
+                                                setSelectedDimensions('720x480');
+                                            }}
+                                            className="rounded-full px-4 h-8 text-md bg-[#B5446E] text-[#EBFFF2] font-fustat-medium items-center justify-center flex"
+                                        >
+                                            Create Page
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         ) : (
+                            /* styling menus */
                             <div className={`flex-1 p-4 border-t-2 ${darkMode ? "border-[#EBFFF2] text-[#EBFFF2]" : "border-[#111317] text-[#111317]"}`}>
                                 {selectedId === null ? (
                                     <>
@@ -449,14 +590,18 @@ function App() {
                                     <>
                                         {/* styling menu for colouring page */}
                                         <p className="text-lg font-fustat-semibold mb-1">Page</p>
-                                        <ColourPicker color={pageColour} onChange={setPageColour} darkMode={darkMode} />
+                                        <ColourPicker 
+                                            color={currentPageColour} 
+                                            onChange={(val) => updatePageColour(currentPageId, val)} 
+                                            darkMode={darkMode} 
+                                        />
                                     </>
                                 ) : (
                                     <>
                                         {/* styling menu for components such as shapes and text */}
                                         <p className="text-lg font-fustat-semibold mb-1 capitalize">{selectedItem?.type}</p>
                                         <ColourPicker
-                                            color={itemStyles[selectedItem.id]?.fill ?? defaultColour[selectedItem.type]}
+                                            color={currentItemStyles[selectedItem.id]?.fill ?? defaultColour[selectedItem.type]}
                                             onChange={val => onStyleChange(selectedItem?.id, 'fill', val)}
                                             darkMode={darkMode}
                                         />
@@ -494,7 +639,6 @@ function App() {
                             <button className="fa fa-font cursor-pointer hover:text-[#B5446E]" onClick={() => addToCanvas('text')} />
 
                             <div className={`inline-block h-full min-h-[2em] w-1 self-stretch rounded-full ${darkMode ? "bg-[#EBFFF2]" : "bg-[#1F1F1F]"}`}></div>
-
 
                             <div className={`flex flex-row items-center px-2 py-1 border-3 rounded-md text-lg font-fustat-semibold space-x-2 ${darkMode ? "border-[#EBFFF2]" : "border-[#1F1F1F]"}`}>
                                 <i className="fa-solid fa-magnifying-glass fa-sm"></i>
