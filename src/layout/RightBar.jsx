@@ -7,4 +7,4 @@ function RightBar({ darkMode }) {
     );
 }
 
-export default RIghtBar;
+export default RightBar;
