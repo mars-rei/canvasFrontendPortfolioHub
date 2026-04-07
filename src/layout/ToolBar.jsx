@@ -12,12 +12,12 @@ function Toolbar({
                 <div className={`py-2 px-8 flex items-center justify-between rounded-2xl fa-xl
                     ${darkMode ? "text-[#EBFFF2] bg-[#1F1F1F]" : "text-[#1F1F1F] bg-[#EBFFF2]"}`}
                 >
-                    {/* undo */}
+                    {/* undo - to implement */}
                     <button
                         className={`fa fa-rotate-left cursor-pointer hover:text-[#B5446E]`}
                     />
 
-                    {/* redo */}
+                    {/* redo - to implement */}
                     <button
                         className={`fa fa-rotate-right cursor-pointer hover:text-[#B5446E]`}
                     />
