@@ -37,10 +37,16 @@ function Toolbar({
                     />
 
                     {/* for new page */}
-                    <i className="fa fa-file-circle-plus hover:text-[#B5446E]" onClick={() => toggleEditPanel('pages')}></i>
+                    <button 
+                        className="fa fa-file-circle-plus hover:text-[#B5446E]" 
+                        onClick={() => toggleEditPanel('pages')}
+                    />
 
                     {/* for new shape */}
-                    <i className="fa fa-draw-polygon cursor-pointer hover:text-[#B5446E]" onClick={() => toggleEditPanel('shapes')}></i>
+                    <button 
+                        className="fa fa-draw-polygon cursor-pointer hover:text-[#B5446E]" 
+                        onClick={() => toggleEditPanel('shapes')}
+                    />
 
                     {/* for adding text */}
                     <button className="fa fa-font cursor-pointer hover:text-[#B5446E]" onClick={() => addToCanvas('text')} />
